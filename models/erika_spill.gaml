@@ -24,9 +24,14 @@ global {
 		ask cell {
 			int val <- int(255 * ( 1  - (grid_value - min_value) /(max_value - min_value)));
 			color <- (val<255)? #darkblue : #lightgray;
+			if (name = "cell2654"){
+				color <- #brown;
+			}
 		}
+		
 	}
 }
+
 
 //definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
 //grid cell file: grid_data;
