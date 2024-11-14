@@ -14,6 +14,7 @@ global {
 
 	//computation of the environment size from the geotiff file
 	geometry shape <- envelope(grid_east);
+	float step <- 1 #minute;
 	
 	float max_value;
 	float min_value;
@@ -23,9 +24,9 @@ global {
 		max_value <- cell max_of (each.grid_value);
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
-			int val <- int(255 * ( 1  - (bands[0] - min_value) /(max_value - min_value)));
-			courant_nord <- bands[0];
-			courant_east <- bands[1];
+			int val <- int(255 * ( 1  - (bands[1] - min_value) /(max_value - min_value)));
+			current_north <- bands[0];
+			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
 				color <- #brown;
@@ -37,21 +38,38 @@ global {
 	}
 }
 
-species petroleum skills: [moving]{
+species petroleum {
 	
-	
+	reflex current_move 
+	{
+		cell mycell;
+		mycell <- cell closest_to self;
+		
+		ask mycell
+		{
+			if (mycell.color != #lightgrey)
+			{
+				myself.location <- {(self.current_east*60 + myself.location.x), self.current_north*60 + myself.location.y };
+				write myself.location;
+			}
+			
+		}
+	}
 	
 	aspect base {
 		geometry var <- circle(2000);
 		draw var color: #black;
 	}	
+	
+	
 }
+
 
 //definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
 //grid cell file: grid_data;
 grid cell files: [grid_north, grid_east]{
-	float courant_nord;
-	float courant_east;
+	float current_north;
+	float current_east;
 }
 
 experiment show_example type: gui {
