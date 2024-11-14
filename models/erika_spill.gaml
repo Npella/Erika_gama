@@ -24,7 +24,7 @@ global {
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
 			int val <- int(255 * ( 1  - (grid_value - min_value) /(max_value - min_value)));
-			color <- (val<255)? #darkblue : #lightgray;
+			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
 				color <- #brown;
 			}
@@ -35,7 +35,7 @@ global {
 species petroleum{
 	aspect base {
 		geometry var <- circle(2000);
-		draw var color: #red;
+		draw var color: #black;
 	}	
 }
 
@@ -47,7 +47,7 @@ grid cell file: grid_north;
 experiment show_example type: gui {
 	output {
 		display test axes:false type:2d{
-			grid cell border: #black elevation:grid_value*5 triangulation:true;
+			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
 			species petroleum aspect:base;
 		}
 	} 
