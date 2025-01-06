@@ -1,5 +1,5 @@
 /**
-* Name: NewModel
+* Name: Erika Spill Model
 * Based on the internal skeleton template. 
 * Author: Nolwenn
 * Tags: 
@@ -18,6 +18,7 @@ global {
 	
 	float max_value;
 	float min_value;
+	int nb_petroleum;
 	init {
 		
 		
@@ -30,7 +31,7 @@ global {
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
 				color <- #brown;
-				create petroleum number:1{
+				create petroleum number:nb_petroleum{
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
 				}
 			}
@@ -50,7 +51,7 @@ species petroleum {
 			if (mycell.color != #lightgrey)
 			{
 				myself.location <- {(self.current_east*60 + myself.location.x), self.current_north*60 + myself.location.y };
-				write myself.location;
+
 			}
 			
 		}
@@ -73,6 +74,7 @@ grid cell files: [grid_north, grid_east]{
 }
 
 experiment show_example type: gui {
+	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-400 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
