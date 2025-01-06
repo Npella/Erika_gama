@@ -11,7 +11,7 @@ global {
 	//definiton of the file to import
 	file grid_east <- grid_file("../includes/eastward_current.tif");
 	file grid_north <- grid_file("../includes/northward_current.tif");
-
+	image_file img_erika <- image_file("../includes/img/erika_wreck.png");
 	//computation of the environment size from the geotiff file
 	geometry shape <- envelope(grid_east);
 	float step <- 1 #minute;
@@ -30,10 +30,10 @@ global {
 			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
-				color <- #brown;
 				create petroleum number:nb_petroleum{
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
 				}
+				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
 		}		
 	}
@@ -64,6 +64,11 @@ species petroleum {
 	
 	
 }
+species erika_wreck {
+	aspect base {
+		draw img_erika size: 13000;
+	}	
+}
 
 
 //definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
@@ -74,11 +79,13 @@ grid cell files: [grid_north, grid_east]{
 }
 
 experiment show_example type: gui {
-	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-400 category: "Pétrole";
+	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-40 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
+			species erika_wreck aspect:base;
 			species petroleum aspect:base;
+			
 		}
 	} 
 }
