@@ -19,6 +19,7 @@ global {
 	float max_value;
 	float min_value;
 	int nb_petroleum;
+	int time_petroleum ;
 	init {
 		
 		
@@ -30,7 +31,7 @@ global {
 			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
-				create petroleum number:nb_petroleum{
+				create petroleum number:nb_petroleum/(time_petroleum*60){
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
 				}
 				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
@@ -65,6 +66,30 @@ species petroleum {
 	
 }
 species erika_wreck {
+	reflex current_move 
+	{
+		cell mycell;
+		mycell <- cell closest_to self;
+		
+		ask mycell
+		{
+			if (mycell.color != #lightgrey)
+			{
+				myself.location <- {(self.current_east*20 + myself.location.x), self.current_north*20 + myself.location.y };
+
+			}
+			
+		}
+		//si on est à un tour ok, on créer un certain nombre de oil spill
+		
+			if cycle <(time_petroleum*60)
+			{
+				create petroleum number:nb_petroleum/(time_petroleum*60){
+					location <- {myself.location.x+rnd(-8000,8000), myself.location.y + rnd(-8000,8000)};}
+			}
+			
+		
+	}
 	aspect base {
 		draw img_erika size: 13000;
 	}	
@@ -79,7 +104,8 @@ grid cell files: [grid_north, grid_east]{
 }
 
 experiment show_example type: gui {
-	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-40 category: "Pétrole";
+	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-400 category: "Pétrole";
+	parameter "Temps d'écoulement du pétrole en tout (en heure)" var: time_petroleum <- 6 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
