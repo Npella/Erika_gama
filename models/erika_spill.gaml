@@ -18,42 +18,69 @@ global {
 	
 	float max_value;
 	float min_value;
-	init {
-		
-		
+	
+	file wind <- csv_file("../includes/Wind_Belle_Ile_121999_012000_daily_averages.csv");
+    matrix tab_wind <- matrix(wind);
+    list<float> lst_speed_wind_north <- tab_wind column_at 4;
+    list<float> lst_speed_wind_east <- tab_wind column_at 3;
+    list<float> lst_direction_wind <- tab_wind column_at 1;
+	init {		
 		max_value <- cell max_of (each.grid_value);
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
-			int val <- int(255 * ( 1  - (bands[1] - min_value) /(max_value - min_value)));
+			int val <- int(255 * ( 1  - (bands[0] - min_value) /(max_value - min_value)));
 			current_north <- bands[0];
 			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
 				color <- #brown;
-				create petroleum number:1{
+				create petroleum number:100{
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					speed_wind_north <- lst_speed_wind_north;
+					speed_wind_east <- lst_speed_wind_east;
+					direction_wind <- lst_direction_wind;
 				}
 			}
 		}		
 	}
 }
 
-species petroleum {
+
+species petroleum skills:[moving]{
+	list<float> speed_wind_north;
+	list<float> speed_wind_east;
+	list<float> direction_wind;
 	
+		
 	reflex current_move 
-	{
+	{		
+		float wind_spn;
+		float wind_spe;
+		int angle;
+		float angle_degrees;
+		float heading_wind;
+		
 		cell mycell;
 		mycell <- cell closest_to self;
+		int day <- 17 + cycle/1440;
+		wind_spn <- speed_wind_north[day];
+		wind_spe <- speed_wind_east[day];
+		heading_wind <- direction_wind[day];
+
 		
 		ask mycell
 		{
 			if (mycell.color != #lightgrey)
 			{
-				myself.location <- {(self.current_east*60 + myself.location.x), self.current_north*60 + myself.location.y };
-				write myself.location;
-			}
-			
+				// Calcul de l'angle en radians
+			    angle <- atan2(self.current_north, self.current_east);
+				myself.speed <- (sqrt(wind_spe^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
+				myself.heading <- (angle + heading_wind*0.1+rnd(-120,120))/2.1 ;
+			}else{
+				myself.speed <- 0.0;
+			}			
 		}
+		do move;
 	}
 	
 	aspect base {
