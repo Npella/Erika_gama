@@ -1,5 +1,5 @@
 /**
-* Name: NewModel
+* Name: Erika Spill Model
 * Based on the internal skeleton template. 
 * Author: Nolwenn
 * Tags: 
@@ -11,20 +11,21 @@ global {
 	//definiton of the file to import
 	file grid_east <- grid_file("../includes/eastward_current.tif");
 	file grid_north <- grid_file("../includes/northward_current.tif");
-
+	image_file img_erika <- image_file("../includes/img/erika_wreck.png");
 	//computation of the environment size from the geotiff file
 	geometry shape <- envelope(grid_east);
 	float step <- 1 #minute;
 	
 	float max_value;
 	float min_value;
+	int nb_petroleum;
 	
 	file wind <- csv_file("../includes/Wind_Belle_Ile_121999_012000_daily_averages.csv");
     matrix tab_wind <- matrix(wind);
     list<float> lst_speed_wind_north <- tab_wind column_at 4;
     list<float> lst_speed_wind_east <- tab_wind column_at 3;
     list<float> lst_direction_wind <- tab_wind column_at 1;
-	init {		
+	init {
 		max_value <- cell max_of (each.grid_value);
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
@@ -34,12 +35,13 @@ global {
 			color <- (val<255)? #blue : #lightgray;
 			if (name = "cell2654"){
 				color <- #brown;
-				create petroleum number:100{
+				create petroleum number:nb_petroleum{
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
 					speed_wind_north <- lst_speed_wind_north;
 					speed_wind_east <- lst_speed_wind_east;
 					direction_wind <- lst_direction_wind;
 				}
+				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
 		}		
 	}
@@ -90,6 +92,11 @@ species petroleum skills:[moving]{
 	
 	
 }
+species erika_wreck {
+	aspect base {
+		draw img_erika size: 13000;
+	}	
+}
 
 
 //definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
@@ -100,10 +107,13 @@ grid cell files: [grid_north, grid_east]{
 }
 
 experiment show_example type: gui {
+	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-40 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
+			species erika_wreck aspect:base;
 			species petroleum aspect:base;
+			
 		}
 	} 
 }
