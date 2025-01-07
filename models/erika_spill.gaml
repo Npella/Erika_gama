@@ -29,7 +29,7 @@ global {
 		max_value <- cell max_of (each.grid_value);
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
-			int val <- int(255 * ( 1  - (bands[0] - min_value) /(max_value - min_value)));
+			int val <- (int(255 * ( 1  - (bands[0] - min_value) /(max_value - min_value)))<255) ? int(255 * ( 1  - (bands[1] - min_value) /(max_value - min_value))):255;
 			current_north <- bands[0];
 			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
@@ -37,9 +37,6 @@ global {
 				color <- #brown;
 				create petroleum number:nb_petroleum{
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
-					speed_wind_north <- lst_speed_wind_north;
-					speed_wind_east <- lst_speed_wind_east;
-					direction_wind <- lst_direction_wind;
 				}
 				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
@@ -49,25 +46,21 @@ global {
 
 
 species petroleum skills:[moving]{
-	list<float> speed_wind_north;
-	list<float> speed_wind_east;
-	list<float> direction_wind;
-	
 		
 	reflex current_move 
 	{		
 		float wind_spn;
 		float wind_spe;
-		int angle;
+		float angle;
 		float angle_degrees;
 		float heading_wind;
 		
 		cell mycell;
 		mycell <- cell closest_to self;
 		int day <- 17 + cycle/1440;
-		wind_spn <- speed_wind_north[day];
-		wind_spe <- speed_wind_east[day];
-		heading_wind <- direction_wind[day];
+		wind_spn <- lst_speed_wind_north[day];
+		wind_spe <- lst_speed_wind_east[day];
+		heading_wind <- lst_direction_wind[day];
 
 		
 		ask mycell
