@@ -41,7 +41,7 @@ global {
 			if (name = "cell2654"){
 
 				create petroleum number:nb_petroleum/(time_petroleum*60){
-					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					location <- {myself.location.x+rnd(-100000,100000), myself.location.y + rnd(-100000,100000)};
 				}
 				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
@@ -66,11 +66,9 @@ species petroleum skills:[moving]{
 
 		int day <- int(17 + cycle/1440);
 		
-
 		wind_spn <- lst_speed_wind_north[day];
 		wind_spe <- lst_speed_wind_east[day];
 		heading_wind <- lst_direction_wind[day];
-
 		
 		ask mycell
 		{
@@ -79,7 +77,7 @@ species petroleum skills:[moving]{
 				// Calcul de l'angle en radians
 			    angle <- atan2(self.current_north, self.current_east);
 				myself.speed <- (sqrt(wind_spe^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
-				myself.heading <- (angle + heading_wind*0.1+2*rnd(-90,90))/3.1 ;
+				myself.heading <- (angle + heading_wind*0.03+2*rnd(-60,60))/3.03 ;
 			}else{
 				myself.speed <- 0.0;
 			}			
@@ -118,7 +116,7 @@ species erika_wreck {
 					if flip(nb_petroleum/(time_petroleum*60))
 					{
 						create petroleum number:1{
-						location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+						location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};
 					
 					}
 					
@@ -126,7 +124,7 @@ species erika_wreck {
 				else
 				{
 					create petroleum number:nb_petroleum/(time_petroleum*60){
-					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};
 					
 				}
 				
