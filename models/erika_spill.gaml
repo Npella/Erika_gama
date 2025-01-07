@@ -115,10 +115,8 @@ species erika_wreck {
 			{
 				create petroleum number:1{
 				location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+				}			
 			}
-			
-		}
-<<<<<<< HEAD
 		//si on est à un tour ok, on créer un certain nombre de oil spill
 		
 			if cycle <(time_petroleum*60)
@@ -128,37 +126,27 @@ species erika_wreck {
 					if flip(nb_petroleum/(time_petroleum*60))
 					{
 						create petroleum number:1{
-						location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};
-					
-					}
-					
+						location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};				
+						}				
+					}			
 				}
 				else
 				{
 					create petroleum number:nb_petroleum/(time_petroleum*60){
-					location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};
-					
+					location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};				
+					}			
 				}
-				
 			}
-			
-		
-=======
-		else
-		{
-			create petroleum number:nb_petroleum/(time_petroleum*60){
-			location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
 		}
->>>>>>> branch 'master' of https://github.com/Npella/Erika_gama.git
 	}
-	}
-	}
+	
 	
 	
 	aspect base {
 		draw img_erika size: 13000;
 	}	
 }
+
 
 
 
@@ -177,9 +165,7 @@ experiment show_example type: gui {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
 			species erika_wreck aspect:base;
-			species petroleum aspect:base;
-			
-		
-}
-}
+			species petroleum aspect:base;	
+		}
+	}
 }
