@@ -79,7 +79,8 @@ species petroleum skills:[moving]{
 				// Calcul de l'angle en radians
 			    angle <- atan2(self.current_north, self.current_east);
 				myself.speed <- (sqrt(wind_spe^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
-				myself.heading <- (angle + heading_wind*0.1+2*rnd(-90,90))/3.1 ;
+				myself.heading <- (angle + heading_wind*0.1+rnd(-50,50))/2.1 ;
+				
 			}else{
 				myself.speed <- 0.0;
 			}			
@@ -146,7 +147,7 @@ grid cell files: [grid_north, grid_east]{
 }
 
 experiment show_example type: gui {
-	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-400 category: "Pétrole";
+	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-100 category: "Pétrole";
 	parameter "Temps d'écoulement du pétrole en tout (en heure)" var: time_petroleum <- 48 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
