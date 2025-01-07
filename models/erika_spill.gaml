@@ -84,8 +84,21 @@ species erika_wreck {
 		
 			if cycle <(time_petroleum*60)
 			{
-				create petroleum number:nb_petroleum/(time_petroleum*60){
+				if nb_petroleum/(time_petroleum*60)<1
+				{
+					if flip(nb_petroleum/(time_petroleum*60))
+					{
+						create petroleum number:1{
+						location <- {myself.location.x+rnd(-8000,8000), myself.location.y + rnd(-8000,8000)};}
+					}
+					
+				}
+				else
+				{
+					create petroleum number:nb_petroleum/(time_petroleum*60){
 					location <- {myself.location.x+rnd(-8000,8000), myself.location.y + rnd(-8000,8000)};}
+				}
+				
 			}
 			
 		
@@ -105,7 +118,7 @@ grid cell files: [grid_north, grid_east]{
 
 experiment show_example type: gui {
 	parameter "Nombre d'unité de pétrole" var: nb_petroleum <-400 category: "Pétrole";
-	parameter "Temps d'écoulement du pétrole en tout (en heure)" var: time_petroleum <- 6 category: "Pétrole";
+	parameter "Temps d'écoulement du pétrole en tout (en heure)" var: time_petroleum <- 48 category: "Pétrole";
 	output {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
