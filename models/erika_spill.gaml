@@ -138,9 +138,6 @@ species erika_wreck {
 
 
 
-
-//definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
-//grid cell file: grid_data;
 grid cell files: [grid_north, grid_east]{
 	float current_north;
 	float current_east;
