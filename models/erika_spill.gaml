@@ -32,7 +32,9 @@ global {
 		max_value <- cell max_of (each.grid_value);
 		min_value <- cell min_of (each.grid_value);
 		ask cell {
-			int val <- int(255 * ( 1  - (bands[1] - min_value) /(max_value - min_value)));
+
+			int val <- (int(255 * ( 1  - (bands[0] - min_value) /(max_value - min_value)))<255) ? int(255 * ( 1  - (bands[1] - min_value) /(max_value - min_value))):255;
+
 			current_north <- bands[0];
 			current_east <- bands[1];
 			color <- (val<255)? #blue : #lightgray;
@@ -40,9 +42,6 @@ global {
 
 				create petroleum number:nb_petroleum/(time_petroleum*60){
 					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
-					speed_wind_north <- lst_speed_wind_north;
-					speed_wind_east <- lst_speed_wind_east;
-					direction_wind <- lst_direction_wind;
 				}
 				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
@@ -52,10 +51,6 @@ global {
 
 
 species petroleum skills:[moving]{
-	list<float> speed_wind_north;
-	list<float> speed_wind_east;
-	list<float> direction_wind;
-	
 		
 	reflex current_move 
 	{		
@@ -68,11 +63,13 @@ species petroleum skills:[moving]{
 		cell mycell;
 		
 		mycell <- cell closest_to self;
+
 		int day <- int(17 + cycle/1440);
-		wind_spn <- speed_wind_north[day];
-		wind_spe <- speed_wind_east[day];
-		heading_wind <- direction_wind[day];
 		
+
+		wind_spn <- lst_speed_wind_north[day];
+		wind_spe <- lst_speed_wind_east[day];
+		heading_wind <- lst_direction_wind[day];
 
 		
 		ask mycell
@@ -121,29 +118,32 @@ species erika_wreck {
 					if flip(nb_petroleum/(time_petroleum*60))
 					{
 						create petroleum number:1{
-						location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};speed_wind_north <- lst_speed_wind_north;
-					speed_wind_east <- lst_speed_wind_east;
-					direction_wind <- lst_direction_wind;}
+						location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					
 					}
 					
 				}
 				else
 				{
 					create petroleum number:nb_petroleum/(time_petroleum*60){
-					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};speed_wind_north <- lst_speed_wind_north;
-					speed_wind_east <- lst_speed_wind_east;
-					direction_wind <- lst_direction_wind;}
+					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					
 				}
 				
 			}
 			
 		
 	}
+	}
+	}
+	
 	aspect base {
 		draw img_erika size: 13000;
 	}	
-}
 
+
+
+}
 
 //definition of the grid from the geotiff file: the width and height of the grid are directly read from the asc file. The values of the asc file are stored in the grid_value attribute of the cells.
 //grid cell file: grid_data;
@@ -161,6 +161,7 @@ experiment show_example type: gui {
 			species erika_wreck aspect:base;
 			species petroleum aspect:base;
 			
-		}
-	} 
+		
+}
+}
 }
