@@ -41,7 +41,7 @@ global {
 			if (name = "cell2654"){
 
 				create petroleum number:nb_petroleum/(time_petroleum*60){
-					location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+					location <- {myself.location.x+rnd(-100000,100000), myself.location.y + rnd(-100000,100000)};
 				}
 				create erika_wreck number: 1 {location <- {myself.location.x,myself.location.y};}
 			}
@@ -66,11 +66,9 @@ species petroleum skills:[moving]{
 
 		int day <- int(17 + cycle/1440);
 		
-
 		wind_spn <- lst_speed_wind_north[day];
 		wind_spe <- lst_speed_wind_east[day];
 		heading_wind <- lst_direction_wind[day];
-
 		
 		ask mycell
 		{
@@ -79,6 +77,7 @@ species petroleum skills:[moving]{
 				// Calcul de l'angle en radians
 			    angle <- atan2(self.current_north, self.current_east);
 				myself.speed <- (sqrt(wind_spe^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
+
 				myself.heading <- (angle + heading_wind*0.1+rnd(-50,50))/2.1 ;
 				
 			}else{
@@ -118,23 +117,38 @@ species erika_wreck {
 			{
 				create petroleum number:1{
 				location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
+				}			
 			}
-			
+		//si on est à un tour ok, on créer un certain nombre de oil spill
+		
+			if cycle <(time_petroleum*60)
+			{
+				if nb_petroleum/(time_petroleum*60)<1
+				{
+					if flip(nb_petroleum/(time_petroleum*60))
+					{
+						create petroleum number:1{
+						location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};				
+						}				
+					}			
+				}
+				else
+				{
+					create petroleum number:nb_petroleum/(time_petroleum*60){
+					location <- {myself.location.x+rnd(-20000,20000), myself.location.y + rnd(-20000,20000)};				
+					}			
+				}
+			}
 		}
-		else
-		{
-			create petroleum number:nb_petroleum/(time_petroleum*60){
-			location <- {myself.location.x+rnd(-10000,10000), myself.location.y + rnd(-10000,10000)};
-		}
 	}
-	}
-	}
+	
 	
 	
 	aspect base {
 		draw img_erika size: 13000;
 	}	
 }
+
 
 
 
@@ -150,9 +164,7 @@ experiment show_example type: gui {
 		display test axes:false type:2d{
 			grid cell border: #lightgrey elevation:grid_value*5 triangulation:true;
 			species erika_wreck aspect:base;
-			species petroleum aspect:base;
-			
-		
-}
-}
+			species petroleum aspect:base;	
+		}
+	}
 }
