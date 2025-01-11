@@ -71,11 +71,11 @@ species petroleum skills:[moving]{
 			if (mycell.color != #lightgrey)
 			{
 				// Calculation of the current angle 
-			    angle <- atan2(self.current_north, self.current_east);
+			    angle <- atan2(-self.current_north, self.current_east);
 			    //Calculation speed of the agent
 				myself.speed <- (sqrt(wind_sp^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
 				//Calculation heading of the agent
-				myself.heading <- (angle + heading_wind*0.1+rnd(-50,50))/2.1;				
+				myself.heading <- angle*1.6 + heading_wind-360;				
 			}else{
 				myself.speed <- 0.0;
 			}			
