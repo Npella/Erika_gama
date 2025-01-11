@@ -77,7 +77,7 @@ species petroleum skills:[moving]{
 			    //Calculation speed of the agent
 				myself.speed <- (sqrt(wind_sp^2)* 0.03 + sqrt(self.current_east^2+self.current_north^2));
 				//Calculation heading of the agent
-				myself.heading <- angle*1.6 + heading_wind;				
+				myself.heading <- angle*1.7 + heading_wind;		
 			}else{
 				myself.speed <- 0.0;
 			}			
